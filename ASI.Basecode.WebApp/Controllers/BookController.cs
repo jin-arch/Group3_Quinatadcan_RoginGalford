@@ -31,5 +31,54 @@ namespace ASI.Basecode.WebApp.Controllers
             _bookService.AddBook(book);
             return RedirectToAction("Index");
         }
+
+        public IActionResult Edit(int id)
+        {
+            var book = _bookService.GetBook(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            return View(book);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Book book)
+        {
+            try
+            {
+                _bookService.UpdateBook(book);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(book);
+            }
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var book = _bookService.GetBook(id);
+            if (book == null)
+            {
+                return NotFound();
+            }
+            return View(book);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            try
+            {
+                _bookService.DeleteBook(id);
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return RedirectToAction("Delete", new { id = id });
+            }
+        }
     }
 }
